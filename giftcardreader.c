@@ -232,7 +232,7 @@ struct this_gift_card *gift_card_reader_buf(uint8_t *buf, long fsize) {
 
 				// don't need a sig if negative
 				/* JAC: something seems off here */
-				if (gcac_ptr < 0) break;
+				if (gcac_ptr->amount_added < 0) break;
 
 				gcac_ptr->actual_signature = ptr;
 				ptr+=32;
