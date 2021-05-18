@@ -5,4 +5,5 @@ giftcardreader: giftcardreader.c
 giftcardexamplewriter:
 	gcc -o giftcardexamplewriter giftcardexamplewriter.c && ./giftcardexamplewriter
 
-
+fuzzer: giftcardreader.c fuzzer.c
+	clang -g -fsanitize=address,fuzzer giftcardreader.c fuzzer.c -o fuzzer

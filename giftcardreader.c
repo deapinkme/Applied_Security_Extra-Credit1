@@ -9,8 +9,10 @@
 
 #include "giftcard.h"
 
+#include <stdint.h>
+
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 
 // interpreter for THX-1138 assembly
 void animate(char *msg, unsigned char *program) {
@@ -168,10 +170,8 @@ int get_gift_card_value(struct this_gift_card *thisone) {
 	return ret_count;
 }
 
-
-
 /* JAC: input_fd is misleading... It's a FILE type, not a fd */
-struct this_gift_card *gift_card_reader(FILE *input_fd) {
+struct this_gift_card *gift_card_reader_buf(uint8_t *buf, long fsize) {
 
 	struct this_gift_card *ret_val = malloc(sizeof(struct this_gift_card));
 
@@ -179,15 +179,19 @@ struct this_gift_card *gift_card_reader(FILE *input_fd) {
 	void *ptr;
 
 	// Loop to do the whole file
-	while (!feof(input_fd)) {
+//	while (!feof(input_fd)) {
+    int i = 0; // The last read byte ordinal
+    while (i < fsize) { // added
 
 		struct gift_card_data *gcd_ptr;
 		/* JAC: Why aren't return types checked? */
-		fread(&ret_val->num_bytes, 4,1, input_fd);
+		//fread(&ret_val->num_bytes, 4,1, input_fd);
+        memcpy(&ret_val->num_bytes, buf+i, 4 * 1); i += 4 * 1; // added
 
 		// Make something the size of the rest and read it in
 		ptr = malloc(ret_val->num_bytes);
-		fread(ptr, ret_val->num_bytes, 1, input_fd);
+		//fread(ptr, ret_val->num_bytes, 1, input_fd);
+        memcpy(ptr, buf+i, ret_val->num_bytes); i += ret_val->num_bytes; // added
 
         optr = ptr-4;
 
@@ -256,9 +260,20 @@ struct this_gift_card *gift_card_reader(FILE *input_fd) {
 	return ret_val;
 }
 
-// BDG: why not a local variable here?
-struct this_gift_card *thisone;
+struct this_gift_card *gift_card_reader(FILE *fp) {
+    uint8_t *buf;
+    fseek(fp, 0, SEEK_END);
+    long fsize = ftell(fp);
+    rewind(fp);
+    buf = malloc(fsize);
+    fread(buf, 1, fsize, fp);    
+    return gift_card_reader_buf(buf, fsize);
+}
 
+// BDG: why not a local variable here?
+//struct this_gift_card *thisone;
+
+/*
 int main(int argc, char **argv) {
     // BDG: no argument checking?
 	FILE *input_fd = fopen(argv[2],"r");
@@ -268,3 +283,4 @@ int main(int argc, char **argv) {
 
 	return 0;
 }
+*/
