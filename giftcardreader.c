@@ -202,7 +202,7 @@ struct this_gift_card *gift_card_reader_buf(uint8_t *buf, long fsize) {
 		gcd_ptr->customer_id = ptr;
 		ptr += 32;	
 		/* JAC: Something seems off here... */
-		gcd_ptr->number_of_gift_card_records = *((char *)ptr);
+		gcd_ptr->number_of_gift_card_records = *((int *)ptr);
 		ptr += 4;
 
 		gcd_ptr->gift_card_record_data = (void *)malloc(gcd_ptr->number_of_gift_card_records*sizeof(void*));
@@ -217,11 +217,11 @@ struct this_gift_card *gift_card_reader_buf(uint8_t *buf, long fsize) {
             struct gift_card_program *gcp_ptr;
 			gcp_ptr = malloc(sizeof(struct gift_card_program));
 
-			gcrd_ptr->record_size_in_bytes = *((char *)ptr);
+			gcrd_ptr->record_size_in_bytes = *((int *)ptr);
             //printf("rec at %x, %d bytes\n", ptr - optr, gcrd_ptr->record_size_in_bytes); 
 			ptr += 4;	
 			//printf("record_data: %d\n",gcrd_ptr->record_size_in_bytes);
-			gcrd_ptr->type_of_record = *((char *)ptr);
+			gcrd_ptr->type_of_record = *((int *)ptr);
 			ptr += 4;	
             //printf("type of rec: %d\n", gcrd_ptr->type_of_record);
 
