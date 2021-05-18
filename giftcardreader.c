@@ -273,14 +273,3 @@ struct this_gift_card *gift_card_reader(FILE *fp) {
 // BDG: why not a local variable here?
 //struct this_gift_card *thisone;
 
-/*
-int main(int argc, char **argv) {
-    // BDG: no argument checking?
-	FILE *input_fd = fopen(argv[2],"r");
-	thisone = gift_card_reader(input_fd);
-	if (argv[1][0] == '1') print_gift_card_info(thisone);
-    else if (argv[1][0] == '2') gift_card_json(thisone);
-
-	return 0;
-}
-*/
